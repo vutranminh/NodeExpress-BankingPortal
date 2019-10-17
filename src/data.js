@@ -1,17 +1,29 @@
 const fs = require('fs');
 const path = require('path');
+const db = require('./mongo');
 
-const accountData = fs.readFileSync(path.join(__dirname, 'json', 'accounts.json'), 'utf8');
+const loadAccounts = async () => {
+    return new Promise((resolve, reject) => {
+        db.accounts.findOne({}, (err, doc) => {
+            if (err)
+                return reject(err);
+            resolve(doc);
+        });
+    });
+}
+const loadUsers = async () => {
+    return new Promise((resolve, reject) => {
+        db.users.find({}, (err, doc) => {
+            if (err)
+                return reject(err);
+            resolve(doc);
+        });
+    });
+}
 
-const accounts = JSON.parse(accountData);
-
-const userData = fs.readFileSync(path.join(__dirname, 'json', 'users.json'), 'utf8');
-
-const users = JSON.parse(userData);
-
-const writeJSON = () => {
-    const accountsJSON = JSON.stringify(accounts, null, 4);
-    fs.writeFileSync(path.join(__dirname, 'json/accounts.json'), accountsJSON, 'utf8');
+const writeJSON = (accounts) => {
+    return new Promise((resolve, reject) => {
+        db.accounts.save(accounts);
+    });
 };
-
-module.exports = {accounts, users, writeJSON};
+module.exports = {loadAccounts, loadUsers, writeJSON};

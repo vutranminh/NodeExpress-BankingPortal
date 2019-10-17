@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const {accounts, users, writeJSON} = require('./data');
+const {loadUsers, loadAccounts, writeJSON} = require('./data');
 const express = require('express');
 const app = express();
 const accountRoutes = require('./routes/accounts');
@@ -12,15 +12,16 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({extended: true}));
 
-
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    const accounts = await loadAccounts();
     res.render('index', {'title': 'Account Summary', accounts});
 });
 
 app.use('/account', accountRoutes);
 app.use('/services', servicesRoutes);
 
-app.get('/profile', (req, res) => {
+app.get('/profile', async (req, res) => {
+    const users = await loadUsers();
     res.render('profile', {user: users[0]});
 });
 

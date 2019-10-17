@@ -1,15 +1,19 @@
-const {accounts} = require('../data');
+const {loadAccounts} = require('../data');
 const express = require('express');
 
 const router = express.Router();
 
-router.get('/savings', (req, res) => {
+router.get('/savings', async (req, res) => {
+    const accounts = await loadAccounts();
     res.render('account', {account: accounts.savings});
+
 });
-router.get('/checking', (req, res) => {
+router.get('/checking', async (req, res) => {
+    const accounts = await loadAccounts();
     res.render('account', {account: accounts.checking});
 });
-router.get('/credit', (req, res) => {
+router.get('/credit', async (req, res) => {
+    const accounts = await loadAccounts();
     res.render('account', {account: accounts.credit});
 });
 

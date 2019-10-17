@@ -11,3 +11,5 @@ COPY . .
 RUN chown -R node:node /src/app
 
 USER node
+
+ENTRYPOINT ["npm", "start"]
