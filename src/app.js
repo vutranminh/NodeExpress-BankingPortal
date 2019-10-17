@@ -1,6 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const {loadUsers, loadAccounts, writeJSON} = require('./data');
+
+const db = require('./database/mongo');
+const Account = new require('./accounts/accounts')({db});
+const User = require('./users/users')({db});
+
 const express = require('express');
 const app = express();
 const accountRoutes = require('./routes/accounts');
@@ -13,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({extended: true}));
 
 app.get('/', async (req, res) => {
-    const accounts = await loadAccounts();
+    const accounts = await Account.loadAll();
     res.render('index', {'title': 'Account Summary', accounts});
 });
 
@@ -21,7 +25,7 @@ app.use('/account', accountRoutes);
 app.use('/services', servicesRoutes);
 
 app.get('/profile', async (req, res) => {
-    const users = await loadUsers();
+    const users = await User.loadAll();
     res.render('profile', {user: users[0]});
 });
 
